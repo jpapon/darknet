@@ -767,8 +767,17 @@ data load_data_detection(int n, char **paths, int m, int w, int h, int c, int bo
         int ptop   = rand_uniform_strong(-dh, dh);
         int pbot   = rand_uniform_strong(-dh, dh);
 
+        int diff = ow - oh;
+
+        int left_crop = rand_uniform_strong(0, diff);
+        int right_crop = diff - left_crop;
+        pleft += left_crop;
+        pright += right_crop;
+
         int swidth =  ow - pleft - pright;
         int sheight = oh - ptop - pbot;
+        printf("Cropped size %dx%d, TopLeft point in original image: %d,%d, \n", swidth, sheight, pleft, ptop);
+
 
         float sx = (float)swidth  / ow;
         float sy = (float)sheight / oh;
