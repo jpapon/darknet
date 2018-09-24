@@ -1026,19 +1026,24 @@ void calc_anchors(char *datacfg, int num_of_clusters, int width, int height, int
 
     char buff[1024];
     FILE* fw = fopen("anchors.txt", "wb");
-    printf("\nSaving anchors to the file: anchors.txt \n");
-    printf("anchors = ");
-    for (i = 0; i < num_of_clusters; ++i) {
-        sprintf(buff, "%2.4f,%2.4f", centers->data.fl[i * 2], centers->data.fl[i * 2 + 1]);
-        printf("%s", buff);
-        fwrite(buff, sizeof(char), strlen(buff), fw);
-        if (i + 1 < num_of_clusters) {
-            fwrite(", ", sizeof(char), 2, fw);
-            printf(", ");
+    if (fw) {
+        printf("\nSaving anchors to the file: anchors.txt \n");
+        printf("anchors = ");
+        for (i = 0; i < num_of_clusters; ++i) {
+            sprintf(buff, "%2.4f,%2.4f", centers->data.fl[i * 2], centers->data.fl[i * 2 + 1]);
+            printf("%s", buff);
+            fwrite(buff, sizeof(char), strlen(buff), fw);
+            if (i + 1 < num_of_clusters) {
+                fwrite(", ", sizeof(char), 2, fw);
+                printf(", ");
+            }
         }
+        printf("\n");
+        fclose(fw);
     }
-    printf("\n");
-    fclose(fw);
+    else {
+        printf(" Error: file anchors.txt can't be open \n");
+    }
 
     if (show) {
         size_t img_size = 700;
@@ -1224,7 +1229,7 @@ void run_detector(int argc, char **argv)
     int ext_output = find_arg(argc, argv, "-ext_output");
     int save_labels = find_arg(argc, argv, "-save_labels");
     if(argc < 4){
-        fprintf(stderr, "usage: %s %s [train/test/valid] [cfg] [weights (optional)]\n", argv[0], argv[1]);
+        fprintf(stderr, "usage: %s %s [train/test/valid/demo/map] [data] [cfg] [weights (optional)]\n", argv[0], argv[1]);
         return;
     }
     char *gpu_list = find_char_arg(argc, argv, "-gpus", 0);
